@@ -1,0 +1,185 @@
+<crud [listToolbarTitle]="'Pesquisa de Tipos de Receita'"
+      [editToolbarTitle]="'Cadastro de Tipo de Receita'"
+      (filtrar)="doFilter()"
+      (novoCadastro)="novaLoja()"
+      (salvar)="doSave(this.model)"
+      (clear)="doClear()">
+
+  <!------------------- LIST CRUD TEMPLATE -------------------->
+  <div crud-list-filter-fields *ngIf="Mode == ModeEnum.List">
+    <dx-form #mainForm>
+      <dxi-item itemType="group" [colCount]="2">
+        <dxi-item [label]="{text:'Nome'}"
+                  [template]="'nomeTemplate'">
+
+        </dxi-item>
+
+        <dxi-item [label]="{text:'Data Criação'}"
+                  [template]="'criacaoTemplate'">
+
+        </dxi-item>
+      </dxi-item>
+      <dxi-item [label]="{text:'Situação'}"
+                [template]="'situacaoTemplate'">
+
+      </dxi-item>
+
+      <!----------------- Templates ----------------->
+
+      <div *dxTemplate="let data of 'nomeTemplate'">
+        <dx-text-box [width]="500"
+        >
+
+        </dx-text-box>
+      </div>
+      <div *dxTemplate="let data of 'criacaoTemplate'">
+        <dx-date-box [width]="200"
+                     [showClearButton]="true"
+                     [useMaskBehavior]="true"
+                     [displayFormat]="'dd/MM/yyyy'">
+
+        </dx-date-box>
+      </div>
+
+      <div *dxTemplate="let data of 'situacaoTemplate'">
+        <dx-select-box [width]="200"
+                       [placeholder]="'Situação'"
+                       [items]="situacaoAtivoInativo"
+                       [showClearButton]="true">
+
+        </dx-select-box>
+      </div>
+    </dx-form>
+  </div>
+
+
+  <div crud-list-result-fields *ngIf="Mode == ModeEnum.List">
+    <dx-data-grid
+      [dataSource]="dataSource"
+      [rowAlternationEnabled]="true" >
+      <dxi-column dataField="nome">
+
+      </dxi-column>
+
+      <dxi-column dataField="dataCriacao"
+                  cellTemplate="dataTemplate"
+                  [width]="'auto'">
+
+      </dxi-column>
+      <dxi-column dataField="temTaxa"
+                  cellTemplate="taxaTemplate">
+
+      </dxi-column>
+      <dxi-column dataField="situacao"
+                  cellTemplate="situacaoTemplate">
+
+      </dxi-column>
+
+      <!----------------- Templates ----------------->
+
+
+      <div *dxTemplate="let data of 'dataTemplate'">
+        {{ data.value ? (data.value | date:"dd/MM/yyyy") : "-" }}
+      </div>
+
+      <div *dxTemplate="let data of 'taxaTemplate'">
+        {{ data.value && data.value == true ? "Sim" : "Não" }}
+      </div>
+
+      <div *dxTemplate="let data of 'situacaoTemplate'">
+        {{ data.value && data.value == true ? "Ativo" : "Inativo" }}
+      </div>
+
+
+
+
+    </dx-data-grid>
+  </div>
+
+  <!------------------- EDIT CRUD TEMPLATE -------------------->
+
+  <div crud-edit-template *ngIf="Mode == ModeEnum.Edit">
+
+    <dx-tab-panel>
+      <dxi-item title="Tipo Receita">
+        <dx-form [(formData)]="tipoReceita">
+
+          <dxi-item dataField="nome"
+                    [isRequired]="true"
+                    [label]="{text:'Nome'}"
+                    [template]="'NomeTemplate'">
+
+          </dxi-item>
+
+          <dxi-item itemType="group" [colCount]="2">
+            <dxi-item dataField="dataCriacao"
+                      [template]="'dataCriacaoTemplate'">
+
+            </dxi-item>
+            <dxi-item dataField="situacao"
+                      [template]="'situacaoTemplate'">
+
+            </dxi-item>
+          </dxi-item>
+
+          <dxi-item dataField="temTaxa"
+                    [template]="'taxaTemplate'"
+                    [label]="{visible:false}">
+
+          </dxi-item>
+
+          <dxi-item dataField="percentualTaxa"
+                    [template]="'percTaxaTemplate'"
+                    *ngIf="model.temTaxa == true">
+
+          </dxi-item>
+
+          <!------------------- TEMPLATE -------------------->
+          <div *dxTemplate="let data of 'dataCriacaoTemplate'">
+            <dx-date-box [width]="200"
+                         [showClearButton]="true"
+                         [useMaskBehavior]="true"
+                         [displayFormat]="'dd/MM/yyyy'">
+
+            </dx-date-box>
+
+          </div>
+
+          <div *dxTemplate="let data of 'situacaoTemplate'">
+            <dx-switch [(value)]="model.situacao">
+
+            </dx-switch>
+          </div>
+
+          <div *dxTemplate="let data of 'NomeTemplate'">
+            <dx-text-box [width]="500"
+                         [placeholder]="'Digite aqui o Nome da Receita'"
+                         [(value)]="model.nome">
+
+            </dx-text-box>
+          </div>
+
+          <div *dxTemplate="let data of 'taxaTemplate'">
+            <dx-check-box [(value)]="model.temTaxa"
+                          [text]="'Tem Taxa'">
+
+            </dx-check-box>
+          </div>
+
+          <div *dxTemplate="let data of 'percTaxaTemplate'">
+            <dx-number-box [(value)]="model.percentualTaxa"
+                           [width]="150">
+
+            </dx-number-box>
+          </div>
+
+        </dx-form>
+
+      </dxi-item>
+
+
+    </dx-tab-panel>
+  </div>
+
+
+</crud>
